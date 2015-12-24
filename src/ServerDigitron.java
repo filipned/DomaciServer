@@ -9,14 +9,15 @@ public class ServerDigitron {
 		try {
 			
 			ServerSocket oslSoketZaKontrolu = new ServerSocket(1908);
-//			Thread t=new Thread(){
-//				public void run() {
-//					ServerDigitronPodaci p=new ServerDigitronPodaci();
-//				};
-//			};
 			
+			ServerDigitronPodaci p=new ServerDigitronPodaci();
+			p.setDaemon(true);
+			p.start();
+            
+            
 			while(true) {
 				new ServerDigitronNitKontrola(oslSoketZaKontrolu.accept()).start();
+				
 			}
 			
 			
@@ -25,4 +26,7 @@ public class ServerDigitron {
 			e.printStackTrace();
 		}
 	}
+
+	
+	
 }

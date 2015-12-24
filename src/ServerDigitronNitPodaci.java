@@ -3,17 +3,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class ServerDigitronNitPodaci extends Thread {
 	
-	Socket soketZaKomPodaci;
-	String brojeviOdKlijenta;
-	String[] brojevi;
-	int[] brojeviInt;
-	String odgovor;
-	String operacija1;
+	private Socket soketZaKomPodaci;
+	private String brojeviOdKlijenta;
+	private String[] brojevi;
+	private double[] brojeviDouble;
+	private String odgovor;
+	private String operacija;
 	
 	public ServerDigitronNitPodaci(Socket soketZaKomPodaci) {
 		this.soketZaKomPodaci = soketZaKomPodaci;
@@ -25,56 +26,67 @@ public class ServerDigitronNitPodaci extends Thread {
 		try {
 			PrintStream kaKlijentu = new PrintStream(soketZaKomPodaci.getOutputStream());
 			BufferedReader odKlijenta = new BufferedReader(new InputStreamReader(soketZaKomPodaci.getInputStream()));
-			
-			brojeviOdKlijenta = odKlijenta.readLine();
-			brojevi = brojeviOdKlijenta.split(" ");
-			for (int i = 0; i < brojevi.length; i++) {
-				System.out.println(brojevi[i]);
-			}
-			brojeviInt = new int[brojevi.length];
-			
-			for(int i = 0; i < brojevi.length; i++) {
-			   brojeviInt[i] = Integer.parseInt(brojevi[i]);
-			}
-			for (int i = 0; i < brojeviInt.length; i++) {
-				System.out.println(brojevi[i]);
-			}
-			operacija1 = ServerDigitronNitKontrola.operacija;
-			if(operacija1.equals("Sabiranje")) {
-				int sum = 0;
-				for (int i = 0; i < brojeviInt.length; i++) {
-					sum += brojeviInt[i];
+
+			try	{
+				brojeviOdKlijenta = odKlijenta.readLine();
+				
+				brojevi = brojeviOdKlijenta.split(" ");
+	
+//				for (int i = 0; i < brojevi.length; i++) {
+//					System.out.println(brojevi[i]);
+//				}
+				
+				brojeviDouble = new double[brojevi.length];
+				
+				for(int i = 0; i < brojevi.length; i++) {
+				   brojeviDouble[i] = Double.parseDouble(brojevi[i]);
 				}
-				odgovor = sum + "";
-			}
-			if(operacija1.equals("Oduzimanje")) {
-				int sub = brojeviInt[0];
-				for (int i = 1; i < brojeviInt.length; i++) {
+//				for (int i = 0; i < brojeviDouble.length; i++) {
+//					System.out.println(brojevi[i]);
+//				}
 					
-					sub -= brojeviInt[i];
-					
+				operacija = ServerDigitronNitKontrola.zahtjev;
+				
+				if(operacija.equals("Sabiranje")) {
+					double sum = 0;
+					for (int i = 0; i < brojeviDouble.length; i++) {
+						sum += brojeviDouble[i];
+					}
+					odgovor = sum + "";
 				}
-				odgovor = sub + "";
-			}
-			if(operacija1.equals("Mnozenje")) {
-				int pr = 1;
-				for (int i = 0; i < brojeviInt.length; i++) {
-					
-					pr *= brojeviInt[i];
-					
+				
+				if(operacija.equals("Oduzimanje")) {
+					double sub = brojeviDouble[0];
+					for (int i = 1; i < brojeviDouble.length; i++) {
+						
+						sub -= brojeviDouble[i];
+						
+					}
+					odgovor = sub + "";
 				}
-				odgovor = pr + "";
-			}
-			if(operacija1.equals("Dijeljenje")) {
-				int quo = brojeviInt[0];
-				for (int i = 1; i < brojeviInt.length; i++) {
-					
-					quo /= brojeviInt[i];
-					
+				
+				if(operacija.equals("Mnozenje")) {
+					double pr = 1;
+					for (int i = 0; i < brojeviDouble.length; i++) {
+						
+						pr *= brojeviDouble[i];
+						
+					}
+					odgovor = pr + "";
 				}
-				odgovor = quo + "";
+				
+				if(operacija.equals("Dijeljenje")) {
+					double quo = brojeviDouble[0];
+					for (int i = 1; i < brojeviDouble.length; i++) {
+						
+						quo /= brojeviDouble[i];
+						
+					}
+					odgovor = quo + "";
+				}
+			} catch(SocketException se) {
+				
 			}
-			
 			kaKlijentu.println(odgovor);
 			
 		} catch (IOException e) {

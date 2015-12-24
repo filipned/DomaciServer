@@ -3,13 +3,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ServerDigitronNitKontrola extends Thread {
 
 	Socket soketZaKomKontrolni;
-	String zahtjev;
+	volatile static String zahtjev;
 	String odgovor;
-	static String operacija = "";
 	public ServerDigitronNitKontrola(Socket soketZaKomKontrolni) {
 		this.soketZaKomKontrolni = soketZaKomKontrolni;
 	}
@@ -21,36 +21,35 @@ public class ServerDigitronNitKontrola extends Thread {
 		try {
 			PrintStream kaKlijentu = new PrintStream(soketZaKomKontrolni.getOutputStream());
 			BufferedReader odKlijenta = new BufferedReader(new InputStreamReader(soketZaKomKontrolni.getInputStream()));
-			while(true){
-				zahtjev = odKlijenta.readLine();
-				System.out.println("prije");
-				System.out.println(zahtjev);
-				
-				if(zahtjev.equals("Sabiranje")) {
-					operacija = "Sabiranje";
-					odgovor = "Odobren";
-				}
-				if(zahtjev.equals("Oduzimanje")) {
-					operacija = "Oduzimanje";
-					odgovor = "Odobren";
-				}
-				if(zahtjev.equals("Mnozenje")) {
-					operacija = "Mnozenje";
-					odgovor = "Odobren";
-				}
-				if(zahtjev.equals("Dijeljenje")) {
-					operacija = "Dijeljenje";
-					odgovor = "Odobren";
-				}
-				
-				System.out.println(operacija+"evo je");
-				System.out.println(odgovor+"evo ga");
-				kaKlijentu.println(odgovor);
-			}
 			
+			while(true){
+				try	{
+					zahtjev = odKlijenta.readLine();
+					
+					if(zahtjev.equals("Sabiranje")) {
+						odgovor = "Odobren";
+					}
+					if(zahtjev.equals("Oduzimanje")) {
+						odgovor = "Odobren";
+					}
+					if(zahtjev.equals("Mnozenje")) {
+						odgovor = "Odobren";
+					}
+					if(zahtjev.equals("Dijeljenje")) {
+						odgovor = "Odobren";
+					}
+					
+					
+					kaKlijentu.println(odgovor);
+				} catch(SocketException se) {
+					
+				}
+			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 }

@@ -1,9 +1,10 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 
-public class ServerDigitronPodaci {
+public class ServerDigitronPodaci extends Thread {
 
-	synchronized public static void main(String[] args) {
+	@Override
+	public void run() {
 
 		ServerSocket oslSoketZaPodatke;
 		try {
