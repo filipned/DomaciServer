@@ -9,15 +9,18 @@ import java.util.LinkedList;
 
 public class ServerDigitronNitPodaci extends Thread {
 	
-	private Socket soketZaKomPodaci;
+	private Socket soketZaKomPodaci = null;
+	
 	private String brojeviOdKlijenta;
 	private String[] brojevi;
 	private double[] brojeviDouble;
+	
 	private String odgovor;
 	private String operacija;
 	
-	public ServerDigitronNitPodaci(Socket soketZaKomPodaci) {
+	public ServerDigitronNitPodaci(Socket soketZaKomPodaci, String operacija) {
 		this.soketZaKomPodaci = soketZaKomPodaci;
+		this.operacija = operacija;
 		
 	}
 
@@ -31,22 +34,12 @@ public class ServerDigitronNitPodaci extends Thread {
 				brojeviOdKlijenta = odKlijenta.readLine();
 				
 				brojevi = brojeviOdKlijenta.split(" ");
-	
-//				for (int i = 0; i < brojevi.length; i++) {
-//					System.out.println(brojevi[i]);
-//				}
-				
 				brojeviDouble = new double[brojevi.length];
-				
+
 				for(int i = 0; i < brojevi.length; i++) {
 				   brojeviDouble[i] = Double.parseDouble(brojevi[i]);
 				}
-//				for (int i = 0; i < brojeviDouble.length; i++) {
-//					System.out.println(brojevi[i]);
-//				}
 					
-				operacija = ServerDigitronNitKontrola.zahtjev;
-				
 				if(operacija.equals("Sabiranje")) {
 					double sum = 0;
 					for (int i = 0; i < brojeviDouble.length; i++) {
@@ -85,10 +78,16 @@ public class ServerDigitronNitPodaci extends Thread {
 					odgovor = quo + "";
 				}
 			} catch(SocketException se) {
-				
+				soketZaKomPodaci.close();
+				kaKlijentu.close();
+				odKlijenta.close();
 			}
+			
 			kaKlijentu.println(odgovor);
 			
+			soketZaKomPodaci.close();
+			kaKlijentu.close();
+			odKlijenta.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
