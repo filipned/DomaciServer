@@ -10,9 +10,7 @@ public class ServerDigitronNitKontrola extends Thread {
 	
 	ServerSocket serverSoketPodaci = null;
 	Socket soketZaKomKontrolni = null;
-	
-	volatile static String zahtjev;
-	
+	String zahtjev;
 	String odgovor;
 	
 	public ServerDigitronNitKontrola(Socket soketZaKomKontrolni, ServerSocket serverSoketPodaci) {
@@ -33,20 +31,11 @@ public class ServerDigitronNitKontrola extends Thread {
 				try	{
 					zahtjev = odKlijenta.readLine();
 					
-					if(zahtjev.equals("Sabiranje")) {
-						odgovor = "Odobren";
-						zahtjevDobar = true;
-					} else	if(zahtjev.equals("Oduzimanje")) {
-						odgovor = "Odobren";
-						zahtjevDobar = true;
-					} else	if(zahtjev.equals("Mnozenje")) {
-						odgovor = "Odobren";
-						zahtjevDobar = true;
-					} else if(zahtjev.equals("Dijeljenje")) {
+					if(zahtjev.equals("Sabiranje") || zahtjev.equals("Oduzimanje") || zahtjev.equals("Mnozenje") || zahtjev.equals("Dijeljenje")) {
 						odgovor = "Odobren";
 						zahtjevDobar = true;
 					} else {
-						odgovor = "Nije odobren";
+						odgovor = "Nije odobren, izaberite operaciju";
 					}
 					
 					kaKlijentu.println(odgovor);
